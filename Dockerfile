@@ -1,10 +1,14 @@
-FROM golang:1.21-alpine AS build
-WORKDIR /app
-COPY . .
-RUN go mod init proxy
-RUN go mod tidy
-RUN go build -ldflags="-s -w" -o proxy
+FROM teddysun/v2ray:latest
 
-FROM gcr.io/distroless/static
-COPY --from=build /app/proxy /
-ENTRYPOINT ["/proxy"]
+# Expose the correct container port (8080)
+EXPOSE 8080
+
+# Copy the VLESS config into the container
+COPY config.json /etc/v2ray/config.json
+
+# Run V2Ray with the config file
+CMD ["v2ray", "run", "-config", "/etc/v2ray/config.json"]
+
+
+# join telegram https://t.me/ragnarservers  for new updates 
+# my telegram username is @Not_Ragnar
